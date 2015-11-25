@@ -11,13 +11,21 @@ class Mqb_Query
     }
     else
     {
-      if($this->_queries[$key] instanceof Mqb_Query)
+      if(!in_array($key, array('$and', '$or')) && $this->_queries[$key] instanceof Mqb_Query)
       {
         $this->_queries[$key]->_merge($value);
       }
       else
       {
-        $values[] = $this->_queries[$key];
+        if(is_array($this->_queries[$key]))
+        {
+          $values = $this->_queries[$key];
+        }
+        else
+        {
+          $values[] = $this->_queries[$key];
+        }
+
         $values[] = $value;
         $this->_queries[$key] = $values;
       }
