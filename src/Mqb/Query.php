@@ -34,6 +34,18 @@ class Mqb_Query
     return $this;
   }
 
+  public function addAnd(Mqb_Query $query)
+  {
+    $this->add('$and', $query);
+    return $this;
+  }
+
+  public function addOr(Mqb_Query $query)
+  {
+    $this->add('$or', $query);
+    return $this;
+  }
+
   private function _merge(Mqb_Query $query)
   {
     foreach($query->_queries as $key => $value)
