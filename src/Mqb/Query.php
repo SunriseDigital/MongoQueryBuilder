@@ -11,16 +11,58 @@ class Mqb_Query
     }
     else
     {
-      $values[] = $this->_queries[$key];
-      $values[] = $value;
-      $this->_queries[$key] = $values;
+      if($this->_queries[$key] instanceof Mqb_Query)
+      {
+        $this->_queries[$key]->_merge($value);
+      }
+      else
+      {
+        $values[] = $this->_queries[$key];
+        $values[] = $value;
+        $this->_queries[$key] = $values;
+      }
     }
 
     return $this;
   }
 
+  private function _merge(Mqb_Query $query)
+  {
+    foreach($query->_queries as $key => $value)
+    {
+      $this->add($key, $value);
+    }
+  }
+
+  private function _buildValue($value)
+  {
+    if(is_array($value))
+    {
+      $values = array();
+      foreach($value as $val)
+      {
+        $values[] = $this->_buildValue($val);
+      }
+      return $values;
+    }
+    else if($value instanceof Mqb_Query)
+    {
+      return $value->build();
+    }
+    else
+    {
+      return $value;
+    }
+  }
+
   public function build()
   {
-    return $this->_queries;
+    $result = array();
+    foreach($this->_queries as $key => $value)
+    {
+      $result[$key] = $this->_buildValue($value);
+    }
+
+    return $result;
   }
 }

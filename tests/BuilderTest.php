@@ -21,4 +21,23 @@ class BuilderTest extends PHPUnit_Framework_TestCase
       )
     ), $query->build());
   }
+
+  public function testHasQuery()
+  {
+    $builder = new Mqb_Builder();
+
+    $query = $builder->query();
+    $query->add('some_column', $builder->query()->add('$gt', 12));
+    $this->assertEquals(array(
+      'some_column' => array('$gt' => 12)
+    ), $query->build());
+
+    $query->add('some_column', $builder->query()->add('$lt', 20));
+    $this->assertEquals(array(
+      'some_column' => array(
+        '$gt' => 12,
+        '$lt' => 20
+      )
+    ), $query->build());
+  }
 }
