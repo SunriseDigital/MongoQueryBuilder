@@ -46,6 +46,12 @@ class Mqb_Query
     return $this;
   }
 
+  public function addDate($key, $datetime)
+  {
+    $this->add($key, new MongoDate(strtotime($datetime)));
+    return $this;
+  }
+
   private function _merge(Mqb_Query $query)
   {
     foreach($query->_queries as $key => $value)
