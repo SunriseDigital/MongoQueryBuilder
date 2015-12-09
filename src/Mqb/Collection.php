@@ -8,6 +8,11 @@ class Mqb_Collection
     $this->_collection = $collection;
   }
 
+  public function find(Mqb_Query $query, array $fields = array())
+  {
+    return $this->_collection->find($query->build(), $fields);
+  }
+
   public function findByColumn($column, $value)
   {
     $query = Mqb_Builder::query();
