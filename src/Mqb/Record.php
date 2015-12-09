@@ -1,5 +1,5 @@
 <?php
-class Mqb_Record
+abstract class Mqb_Record
 {
   private $_values = array();
   private $_updated = array();
@@ -9,10 +9,17 @@ class Mqb_Record
 
   }
 
+  abstract protected function _getCollectionName();
+
   public function bindFromDb(array $values)
   {
     $this->_values = $values;
     $this->_is_new = false;
+  }
+
+  public function getId()
+  {
+    return $this->get('_id');
   }
 
   public function get($name)
@@ -46,15 +53,30 @@ class Mqb_Record
     return $this->_is_new;
   }
 
-  public function save(Mqb_Collection $collection)
+  public function save(Mqb_Db $db)
   {
+    $cname = $this->_getCollectionName();
+    $collection = $db->$cname;
+
     if($this->isNew())
     {
+      if(!isset($this->_updated['_id']))
+      {
+        $this->_updated['_id'] = new MongoId();
+      }
+
       $res = $collection->driver()->insert($this->_updated);
       $this->_is_new = false;
+    }
+    else
+    {
+      $query = Mqb_Builder::query()->add('_id', $this->getId());
+      $res = $collection->driver()->update($query->build(), array('$set' => $this->_updated));
     }
 
     $this->_values = array_merge($this->_values, $this->_updated);
     $this->_updated = array();
+
+    return $res;
   }
 }
