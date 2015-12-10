@@ -8,7 +8,7 @@ class Mqb_Db
 
   public function __construct($host, $user, $password, $db_name)
   {
-    $this->_mongo = new Mongo("mongodb://{$user}:{$password}@{$host}/{$db_name}", array('w' => 1, 'j' => true, 'wTimeoutMS' => 1000));
+    $this->_mongo = new Mongo("mongodb://{$user}:{$password}@{$host}/{$db_name}", array('w' => 1, 'wTimeoutMS' => 1000));
     $this->_connection = $this->_mongo->$db_name;
   }
 
