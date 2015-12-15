@@ -34,6 +34,11 @@ class Mqb_Query
     return $this;
   }
 
+  public function has($key)
+  {
+    return isset($this->_queries[$key]);
+  }
+
   public function addAnd(Mqb_Query $query)
   {
     $this->add('$and', $query);

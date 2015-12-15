@@ -53,6 +53,17 @@ abstract class Mqb_Record
     return $this->_is_new;
   }
 
+  public function getZendDate($name)
+  {
+    $value = $this->get($name);
+    if($value instanceof MongoDate)
+    {
+      return new Zend_Date($value->sec);
+    }
+
+    return new Zend_Date($value);
+  }
+
   public function save(Mqb_Db $db)
   {
     $cname = $this->_getCollectionName();
