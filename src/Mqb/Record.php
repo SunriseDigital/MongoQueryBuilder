@@ -64,6 +64,24 @@ abstract class Mqb_Record
     return new Zend_Date($value);
   }
 
+  public function isUpdated()
+  {
+    return !empty($this->_updated);
+  }
+
+  public function delete(Mqb_Db $db)
+  {
+    if(!$this->isNew())
+    {
+      $cname = $this->_getCollectionName();
+      $collection = $db->$cname;
+      $query = Mqb_Builder::query()->add('_id', $this->getId());
+      return $collection->driver()->remove($query->build());
+    }
+
+    return false;
+  }
+
   public function save(Mqb_Db $db)
   {
     $cname = $this->_getCollectionName();
@@ -79,7 +97,7 @@ abstract class Mqb_Record
       $res = $collection->driver()->insert($this->_updated);
       $this->_is_new = false;
     }
-    else
+    else if($this->isUpdated())
     {
       $query = Mqb_Builder::query()->add('_id', $this->getId());
       $res = $collection->driver()->update($query->build(), array('$set' => $this->_updated));

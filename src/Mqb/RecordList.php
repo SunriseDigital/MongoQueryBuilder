@@ -5,7 +5,7 @@ class Mqb_RecordList implements Iterator
   private $_record_class_name;
   protected $_cursor;
 
-  public function __construct(MongoCursor $cursor, $record_class_name = 'Mqb_Record')
+  public function __construct(MongoCursor $cursor, $record_class_name)
   {
     $this->_record_class_name = $record_class_name;
     $this->_cursor = $cursor;
